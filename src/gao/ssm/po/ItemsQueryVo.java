@@ -1,5 +1,9 @@
 package gao.ssm.po;
-
+/**
+ * 商品信息的组合扩展类
+ * @author DELL
+ *
+ */
 public class ItemsQueryVo {
 	// 商品信息
 	private Items items;

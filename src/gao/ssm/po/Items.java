@@ -2,15 +2,23 @@ package gao.ssm.po;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class Items {
     private Integer id;
 
+    // 校验名称在1-30个字符之间
+    // message为提示校验出错所显示的信息
+    @Size(min=1,max=30,message="{items.name.length.error}")
     private String name;
 
     private Float price;
 
     private String pic;
 
+    // 非空校验
+    @NotNull(message="{items.createtime.isNull}")
     private Date createtime;
 
     private String detail;

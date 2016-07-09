@@ -1,6 +1,8 @@
 package gao.ssm.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,11 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import gao.ssm.controller.validation.ValidateGroup1;
+import gao.ssm.controller.validation.ValidateGroup2;
 import gao.ssm.po.ItemsCustom;
 import gao.ssm.po.ItemsQueryVo;
 import gao.ssm.service.ItemsService;
@@ -32,6 +37,19 @@ public class ItemsController {
 	// 自动注入业务层的商品管理Service
 	@Autowired
 	private ItemsService itemsService;
+	
+	// 商品分类
+	// itemtypes表示最终将方法的返回值放在request域中的key
+	@ModelAttribute("itemtypes")
+	public Map<String, String> getItemTypes() {
+
+		Map<String, String> itemTypes = new HashMap<String, String>();
+		itemTypes.put("101", "数码");
+		itemTypes.put("102", "母婴");
+
+		return itemTypes;
+	}
+
 	
 	// 查询商品列表
 	// 一般建议将方法名和url写成一样，方便维护（由于前端控制器中配置为*.action，这里无论写不写.action，最终在浏览器中都要写上.action
@@ -86,7 +104,8 @@ public class ItemsController {
 		// 调用service根据id查询商品信息
 		ItemsCustom itemsCustom = itemsService.findItemsById(items_id);
 		// 通过形参中的model将Model数据传到页面
-		model.addAttribute("itemsCustom", itemsCustom);
+//		model.addAttribute("itemsCustom", itemsCustom);
+		model.addAttribute("items", itemsCustom); // 测试回显
 		// 返回信息，视图页面
 		return "items/editItems";
 	}
@@ -94,9 +113,13 @@ public class ItemsController {
 	// 商品信息修改提交
 	// 在需要校验的pojo前边添加@Validated，在需要校验的pojo后边需要添加BindingResult bindingResult接收校验出错信息
 	// 注意：@Validated和BindingResult bindingResult是配对出现的，并且在形参中的顺序是固定的（一前一后）。
+	// value={ValidateGroup1.class}指定使用ValidateGroup1的校验规则
+	// springmvc默认对pojo数据进行回显。pojo数据传入controller方法后，springmvc自动将pojo数据放到request域，key等于pojo类型（首字母小写）
+	// @ModelAttribute("items")可以指定pojo回显到页面在request域中的key
 	@RequestMapping("/editItemsSubmit")
 	public String editItemsSubmit(Model model, HttpServletRequest request, Integer id,
-			@Validated ItemsCustom itemsCustom, BindingResult bindingResult) throws Exception {
+//			@ModelAttribute("items") @Validated(value={ValidateGroup1.class,ValidateGroup2.class}) ItemsCustom itemsCustom, BindingResult bindingResult) throws Exception {
+			@Validated(value={ValidateGroup1.class,ValidateGroup2.class}) ItemsCustom itemsCustom, BindingResult bindingResult) throws Exception {
 		// 获取校验错误信息
 		if(bindingResult.hasErrors()){
 			// 输出错误信息
@@ -106,6 +129,8 @@ public class ItemsController {
 			}
 			// 将错误信息传到页面
 			model.addAttribute("allErrors", allErrors);
+			// 可以直接使用model将pojo回显到页面（最简单）
+			model.addAttribute("items", itemsCustom);
 			// 出错重新到商品的修改页面
 			return "items/editItems";
 		}

@@ -25,7 +25,14 @@
 查询条件：
 <table width="100%" border=1>
 <tr>
-<td>商品名称：<input name="itemsCustom.name"></td>
+<td>商品名称：<input name="itemsCustom.name">
+商品类型：
+<select name="itemtype">
+	<c:forEach items="${itemtypes }" var="itemtype">
+		<option value="${itemtype.key }">${itemtype.value }</option>		
+	</c:forEach>
+</select>
+</td>
 <td>
 <input type="button" value="查询" onclick="queryItems()" />
 <input type="button" value="批量删除" onclick="deleteItems()"/>

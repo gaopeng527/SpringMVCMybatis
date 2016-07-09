@@ -27,7 +27,7 @@
 	使用mvc:annotation-driven就不用配置RequestMappingHandlerMapping和RequestMappingHandlerAdapter
 	实际开发时使用mvc:annotation-driven（因为加载的还有很多其他绑定参数）
 	 -->
-	<mvc:annotation-driven></mvc:annotation-driven>
+	<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
 	
 	<!-- 视图解析器
 	解析jsp，默认使用jstl标签，classpath下需要有jstl的包
@@ -37,6 +37,17 @@
 		<property name="prefix" value="/WEB-INF/jsp/"/>
 		<!-- 配置jsp路径的后缀 -->
 		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!-- 自定义参数绑定，配置日期绑定格式 -->
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<!-- 转换器 -->
+		<property name="converters">
+			<list>
+				<!-- 日期类型转换器 -->
+				<bean class="gao.ssm.controller.converter.CustomDateConverter"/>
+			</list>
+		</property>
 	</bean>
 
 </beans>

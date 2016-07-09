@@ -5,12 +5,16 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import gao.ssm.controller.validation.ValidateGroup1;
+import gao.ssm.controller.validation.ValidateGroup2;
+
 public class Items {
     private Integer id;
 
     // 校验名称在1-30个字符之间
     // message为提示校验出错所显示的信息
-    @Size(min=1,max=30,message="{items.name.length.error}")
+    // groups表明此校验属于哪个分组，groups可定义多个分组
+    @Size(min=1,max=30,message="{items.name.length.error}",groups={ValidateGroup1.class})
     private String name;
 
     private Float price;
@@ -18,7 +22,7 @@ public class Items {
     private String pic;
 
     // 非空校验
-    @NotNull(message="{items.createtime.isNull}")
+    @NotNull(message="{items.createtime.isNull}",groups={ValidateGroup2.class})
     private Date createtime;
 
     private String detail;

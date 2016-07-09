@@ -1,5 +1,6 @@
 package gao.ssm.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import gao.ssm.mapper.ItemsMapperCustom;
 import gao.ssm.po.Items;
 import gao.ssm.po.ItemsCustom;
+import gao.ssm.po.ItemsExample;
 import gao.ssm.po.ItemsQueryVo;
 import gao.ssm.service.ItemsService;
 import gao.ssm.mapper.ItemsMapper;
@@ -48,6 +50,15 @@ public class ItemsServiceImpl implements ItemsService {
 		// 要求必须传入id信息
 		itemsCustom.setId(id);
 		itemsMapper.updateByPrimaryKeyWithBLOBs(itemsCustom);
+	}
+
+	@Override
+	public void deleteItems(Integer[] items_id) throws Exception {
+		ItemsExample itemsExample = new ItemsExample();
+		//通过criteria构造删除条件
+		ItemsExample.Criteria criteria = itemsExample.createCriteria();
+		criteria.andIdIn(Arrays.asList(items_id));
+		itemsMapper.deleteByExample(itemsExample);
 	}
 
 }

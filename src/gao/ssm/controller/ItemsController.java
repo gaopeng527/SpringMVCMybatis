@@ -36,7 +36,7 @@ public class ItemsController {
 	@RequestMapping("/queryItems")
 	public ModelAndView queryItems(HttpServletRequest request, ItemsQueryVo itemsQueryVo) throws Exception {
 		// 测试页面转发（forward）request可共享
-		System.out.println(request.getParameter("id"));
+//		System.out.println(request.getParameter("id"));
 		
 		// 调用service查找数据库，查询商品列表
 		List<ItemsCustom> itemsList = itemsService.findItemsList(itemsQueryVo);
@@ -123,4 +123,56 @@ public class ItemsController {
 		return "success";
 	}
 	
+	// 批量修改商品页面
+	@RequestMapping("/editItemsQuery")
+	public ModelAndView editItemsQuery(HttpServletRequest request, ItemsQueryVo itemsQueryVo) throws Exception {
+		
+		// 调用service查找数据库，查询商品列表
+		List<ItemsCustom> itemsList = itemsService.findItemsList(itemsQueryVo);
+		
+		// 返回ModelAndView
+		ModelAndView modelAndView = new ModelAndView();
+		// 相当于request的setAttribute()方法，在jsp页面中通过itemsList来取数据
+		modelAndView.addObject("itemsList", itemsList);
+		// 指定视图
+		// 下边的路径如果在视图解析器中配置了jsp路径的前缀和jsp路径的后缀，可以修改为
+		// modelAndView.setViewName("/WEB-INF/jsp/items/itemsList.jsp");
+		// 上边路径中的前缀和后缀都可以去掉
+		modelAndView.setViewName("items/editItemsQuery");
+
+		return modelAndView;
+	}
+	
+	// 批量修改商品提交，使用List接收页面提交的批量数据，通过包装pojo接收，在包装pojo中定义list<pojo>属性
+	// 通过itemsQueryVo接收批量提交的商品信息，将商品信息存储到itemsQueryVo中的itemsList属性中
+	@RequestMapping("/editItemsAllSubmit")
+	public String editItemsAllSubmit(ItemsQueryVo itemsQueryVo) throws Exception {
+		
+		return "success";
+	}
+	
+	// 使用Map接收页面提交的数据信息，也通过在包装pojo中定义map类型属性
+//	包装类中定义Map对象如下：
+//	Public class QueryVo {
+//	private Map<String, Object> itemInfo = new HashMap<String, Object>();
+//	  //get/set方法..
+//	}
+//
+//	页面定义如下：
+//
+//	<tr>
+//	<td>学生信息：</td>
+//	<td>
+//	姓名：<inputtype="text"name="itemInfo['name']"/>
+//	年龄：<inputtype="text"name="itemInfo['price']"/>
+//	.. .. ..
+//	</td>
+//	</tr>
+//
+//	Contrller方法定义如下：
+//
+//	public String useraddsubmit(Model model,QueryVo queryVo)throws Exception{
+//	System.out.println(queryVo.getStudentinfo());
+//	}
+
 }

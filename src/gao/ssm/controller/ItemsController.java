@@ -111,8 +111,15 @@ public class ItemsController {
 //		response.setCharacterEncoding("utf-8");
 //		response.setContentType("application/json;charset=utf-8");
 //		response.getWriter().write("json串");
-
 		
+		return "success";
+	}
+	
+	// 批量删除商品信息
+	@RequestMapping("/deleteItems")
+	public String deleteItems(Integer[] items_id) throws Exception{
+		// 调用service删除商品
+		itemsService.deleteItems(items_id);
 		return "success";
 	}
 	

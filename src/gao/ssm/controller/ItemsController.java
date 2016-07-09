@@ -1,6 +1,5 @@
 package gao.ssm.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import gao.ssm.po.ItemsCustom;
+import gao.ssm.po.ItemsQueryVo;
 import gao.ssm.service.ItemsService;
 
 /**
@@ -34,12 +34,12 @@ public class ItemsController {
 	// 一般建议将方法名和url写成一样，方便维护（由于前端控制器中配置为*.action，这里无论写不写.action，最终在浏览器中都要写上.action
 	// @RequestMapping("/queryItems")实现方法和url的映射，一个方法对应一个url
 	@RequestMapping("/queryItems")
-	public ModelAndView queryItems(HttpServletRequest request) throws Exception {
+	public ModelAndView queryItems(HttpServletRequest request, ItemsQueryVo itemsQueryVo) throws Exception {
 		// 测试页面转发（forward）request可共享
 		System.out.println(request.getParameter("id"));
 		
 		// 调用service查找数据库，查询商品列表
-		List<ItemsCustom> itemsList = itemsService.findItemsList(null);
+		List<ItemsCustom> itemsList = itemsService.findItemsList(itemsQueryVo);
 		
 		// 返回ModelAndView
 		ModelAndView modelAndView = new ModelAndView();

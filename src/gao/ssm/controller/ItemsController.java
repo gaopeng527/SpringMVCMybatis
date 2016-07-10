@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import gao.ssm.controller.validation.ValidateGroup1;
 import gao.ssm.controller.validation.ValidateGroup2;
+import gao.ssm.exception.CustomException;
 import gao.ssm.po.ItemsCustom;
 import gao.ssm.po.ItemsQueryVo;
 import gao.ssm.service.ItemsService;
@@ -103,6 +104,10 @@ public class ItemsController {
 	public String editItems(Model model, @RequestParam(value="id",required=true) Integer items_id) throws Exception{
 		// 调用service根据id查询商品信息
 		ItemsCustom itemsCustom = itemsService.findItemsById(items_id);
+		// 判断查询结果是否为空，如果根据id没有查询到商品，抛出异常，提示用户商品信息不存在
+//		if(itemsCustom == null){
+//			throw new CustomException("修改的商品信息不存在！");
+//		}
 		// 通过形参中的model将Model数据传到页面
 //		model.addAttribute("itemsCustom", itemsCustom);
 		model.addAttribute("items", itemsCustom); // 测试回显
@@ -129,7 +134,7 @@ public class ItemsController {
 			}
 			// 将错误信息传到页面
 			model.addAttribute("allErrors", allErrors);
-			// 可以直接使用model将pojo回显到页面（最简单）
+			// 可以直接使用model将pojo回显到页面（最简单）（简单的数据类型回显只能采用model）
 			model.addAttribute("items", itemsCustom);
 			// 出错重新到商品的修改页面
 			return "items/editItems";

@@ -1,8 +1,10 @@
 package gao.ssm.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,11 +18,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import gao.ssm.controller.validation.ValidateGroup1;
 import gao.ssm.controller.validation.ValidateGroup2;
-import gao.ssm.exception.CustomException;
 import gao.ssm.po.ItemsCustom;
 import gao.ssm.po.ItemsQueryVo;
 import gao.ssm.service.ItemsService;
@@ -124,7 +126,9 @@ public class ItemsController {
 	@RequestMapping("/editItemsSubmit")
 	public String editItemsSubmit(Model model, HttpServletRequest request, Integer id,
 //			@ModelAttribute("items") @Validated(value={ValidateGroup1.class,ValidateGroup2.class}) ItemsCustom itemsCustom, BindingResult bindingResult) throws Exception {
-			@Validated(value={ValidateGroup1.class,ValidateGroup2.class}) ItemsCustom itemsCustom, BindingResult bindingResult) throws Exception {
+			@Validated(value={ValidateGroup1.class,ValidateGroup2.class}) ItemsCustom itemsCustom, BindingResult bindingResult, 
+			MultipartFile items_pic // 接收商品图片
+			) throws Exception {
 		// 获取校验错误信息
 		if(bindingResult.hasErrors()){
 			// 输出错误信息
@@ -138,6 +142,29 @@ public class ItemsController {
 			model.addAttribute("items", itemsCustom);
 			// 出错重新到商品的修改页面
 			return "items/editItems";
+		}
+		
+		// 上传图片
+		if(items_pic != null){
+			// 存储图片的物理路径
+			String pic_path = "E:\\apache-tomcat-8.0.36\\upload\\temp\\";
+			// 上传图片的原始名称
+			String originalFilename = items_pic.getOriginalFilename();
+			if(originalFilename != null && originalFilename.length()>0){
+				// 新的图片名称
+				String newFilename = UUID.randomUUID()+originalFilename.substring(originalFilename.lastIndexOf("."));
+				// 新图片
+				File newFile = new File(pic_path+newFilename);
+				// 将内存中的数据写入磁盘
+				items_pic.transferTo(newFile);
+				// 将新的文件名称写到itemsCustom中
+				itemsCustom.setPic(newFilename);
+			}
+		}
+		// 防止如果用户不选图片进行提交，图片变为null
+		if(itemsCustom.getPic() == null){
+			ItemsCustom itemsCustomOld = itemsService.findItemsById(id);
+			itemsCustom.setPic(itemsCustomOld.getPic());
 		}
 		
 		// 调用service更新商品信息，页面需要将信息传到此位置（通过参数绑定）

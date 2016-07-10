@@ -11,6 +11,7 @@ import gao.ssm.po.ItemsCustom;
 import gao.ssm.po.ItemsExample;
 import gao.ssm.po.ItemsQueryVo;
 import gao.ssm.service.ItemsService;
+import gao.ssm.exception.CustomException;
 import gao.ssm.mapper.ItemsMapper;
 /**
  * 管理商品实现
@@ -33,11 +34,17 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	public ItemsCustom findItemsById(Integer id) throws Exception {
 		Items items = itemsMapper.selectByPrimaryKey(id);
+		if(items == null){
+			throw new CustomException("修改的商品信息不存在！");
+		}
 		// 中间对商品做些业务处理
 		// ...
 		// 返回处理后的ItemsCustom信息
-		ItemsCustom itemsCustom = new ItemsCustom();
-		BeanUtils.copyProperties(items, itemsCustom);
+		ItemsCustom itemsCustom = null;
+		if(items != null){
+			itemsCustom = new ItemsCustom();
+			BeanUtils.copyProperties(items, itemsCustom);
+		}
 		return itemsCustom;
 	}
 

@@ -18,6 +18,12 @@
 	 -->
 	<context:component-scan base-package="gao.ssm.controller"></context:component-scan>
 	
+	<!-- 静态资源解析，当采用RESTful方式的前端控制器时，需要此配置避免对静态资源的解析
+	包括：js、css、img、...
+	 -->
+	<mvc:resources location="/js/" mapping="/js/**"/>
+	<mvc:resources location="/img/" mapping="/img/**"/>
+	
 	<!--注解的映射器 -->
 	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/> -->
 	<!--注解的适配器 -->

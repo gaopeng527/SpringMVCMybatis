@@ -15,9 +15,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -53,6 +55,15 @@ public class ItemsController {
 		return itemTypes;
 	}
 
+	// 查询商品信息，返回json，采用RESTful的url格式
+	// /itemsView/{id}中的{id}表示将这个位置的参数传到@PathVariable指定的名称当中
+	@RequestMapping("/itemsView/{id}")
+	public @ResponseBody ItemsCustom itemsView(@PathVariable("id") Integer id) throws Exception {
+		// 调用Service查询商品信息
+		ItemsCustom itemsCustom = itemsService.findItemsById(id);
+		return itemsCustom;
+	}
+	
 	
 	// 查询商品列表
 	// 一般建议将方法名和url写成一样，方便维护（由于前端控制器中配置为*.action，这里无论写不写.action，最终在浏览器中都要写上.action
